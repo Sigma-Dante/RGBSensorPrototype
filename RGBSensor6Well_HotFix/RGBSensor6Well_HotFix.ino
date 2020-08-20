@@ -22,12 +22,7 @@ Adafruit_BluefruitLE_UART ble(bluetoothSerial, BLUEFRUIT_UART_MODE_PIN,
                       BLUEFRUIT_UART_CTS_PIN, BLUEFRUIT_UART_RTS_PIN);
 
 // Initialize type for RGB Sensors
-Adafruit_TCS34725_modified tcs0;
-Adafruit_TCS34725_modified tcs1;
-Adafruit_TCS34725_modified tcs2;
-Adafruit_TCS34725_modified tcs3;
-Adafruit_TCS34725_modified tcs4;
-Adafruit_TCS34725_modified tcs5;
+Adafruit_TCS34725_modified tcs = Adafruit_TCS34725_modified(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
 
 char message[LENGTH];
 int extensionLength;
@@ -112,48 +107,8 @@ void FactoryResetBluetooth() {
 
 void setupSensors() {
   //Sets up RGB on MUX Channel 0
-  Serial.println("Setting up Sensor 0");
-  delay(500);
   tcaselect(0);
-  tcs0 = Adafruit_TCS34725_modified(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
-  tcs0.begin();
-
-  //Sets up RGB on MUX Channel 1
-  Serial.println("Setting up Sensor 1");
-  delay(500);
-  tcaselect(1);
-  tcs1 = Adafruit_TCS34725_modified(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
-  tcs1.begin();
-
-  //Sets up RGB on MUX Channel 2
-  Serial.println("Setting up Sensor 2");
-  delay(500);
-  tcaselect(2);
-  tcs2 = Adafruit_TCS34725_modified(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
-  tcs2.begin();
-
-  //Sets up RGB on MUX Channel 3
-  Serial.println("Setting up Sensor 3");
-  delay(500);
-  tcaselect(3);
-  tcs3 = Adafruit_TCS34725_modified(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
-  tcs3.begin();
-
-  //Sets up RGB on MUX Channel 4
-  Serial.println("Setting up Sensor 4");
-  delay(500);
-  tcaselect(4);
-  tcs4 = Adafruit_TCS34725_modified(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
-  tcs4.begin();
-
-  //Sets up RGB on MUX Channel 5
-  Serial.println("Setting up Sensor 5");
-  delay(500);
-  tcaselect(5);
-  tcs5 = Adafruit_TCS34725_modified(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
-  tcs5.begin();
-
-  Wire.begin(); 
+  tcs.begin();
 }
 
 void processReceivedData() {
@@ -238,32 +193,9 @@ void readSensor(int sensor) {
   digitalWrite(BOARD_LED, HIGH);
 
   tcaselect(sensor);
-  switch(sensor){
-    case 0:
-      tcs0.enable();
-      tcs0.getRawData(&red, &green, &blue, &clear);
-      break;
-    case 1:
-      tcs1.enable();
-      tcs1.getRawData(&red, &green, &blue, &clear);
-      break;
-    case 2:
-      tcs2.enable();
-      tcs2.getRawData(&red, &green, &blue, &clear);
-      break;
-    case 3:
-      tcs3.enable();
-      tcs3.getRawData(&red, &green, &blue, &clear);
-      break;
-    case 4:
-      tcs4.enable();
-      tcs4.getRawData(&red, &green, &blue, &clear);
-      break;
-    case 5:
-      tcs5.enable();
-      tcs5.getRawData(&red, &green, &blue, &clear);
-      break;
-  }
+  tcs.enable();
+  tcs.getRawData(&red, &green, &blue, &clear);
+  
 
   digitalWrite(BOARD_LED, LOW);
 

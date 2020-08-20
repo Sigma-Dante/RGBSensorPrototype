@@ -163,7 +163,7 @@ Adafruit_TCS34725_modified::Adafruit_TCS34725_modified(tcs34725IntegrationTime_t
 /**************************************************************************/
 boolean Adafruit_TCS34725_modified::begin(void) 
 {
-  //Wire.begin();
+  Wire.begin();
   
   // Commented out as we are definitely connected and don't need to make the check
   // Also, it always returns false as we are using a MUX to switch between sensors,
