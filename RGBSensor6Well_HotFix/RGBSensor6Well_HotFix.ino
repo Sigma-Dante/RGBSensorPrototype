@@ -14,9 +14,10 @@
 #define MODE_LED_BEHAVIOUR          "MODE"
 
 #define TCAADDR 0x70
+#define BLUETOOTH_MODE_PIN  8
 
 
-SoftwareSerial bluetoothSerial(BLUETOOTH_TX, BLUETOOTH_RX);
+SoftwareSerial bluetoothSerial(BLUEFRUIT_SWUART_TXD_PIN, BLUEFRUIT_SWUART_RXD_PIN);
 Adafruit_BluefruitLE_UART ble(bluetoothSerial, BLUEFRUIT_UART_MODE_PIN,
                       BLUEFRUIT_UART_CTS_PIN, BLUEFRUIT_UART_RTS_PIN);
 
@@ -47,24 +48,20 @@ void error(const __FlashStringHelper*err) {
 
 void setup() {
   Serial.begin(9600);
-  ble.end(); // Flushes bluetooth connection if active
-  if (!ble.begin(VERBOSE_MODE)){
-	  error(F("Couldn't find Bluefruit, make sure it's in CoMmanD mode & check wiring?"));
-  }
   
   extensionSetting = 0;
-  extensionLength = FULL_EXTENSION; // Used to determine how much the actuator extends
-
-  delay(1000);
-  
+  extensionLength = FULL_EXTENSION; // Used to determine how much the actuator extend
+ 
   Serial.println(F("Setup Pins")); setupPins(); // Setups the non-bluetooth pins
-  
   Serial.println(F("Setup Sensors")); setupSensors(); // Setups the RGB Sensors // Loose pin somewhere in setupSensors()
   
-// Process to setup bluetooth
+  // Process to setup bluetooth
   if(!test) {
     Serial.println(F("Setup Bluetooth..."));
-    setupBluetooth();
+    FactoryResetBluetooth();
+    if (!ble.begin(VERBOSE_MODE)){
+      error(F("Couldn't find Bluefruit, make sure it's in CoMmanD mode & check wiring?"));
+    }
     Serial.println(F("Finished Bluetooth Setup"));
   }
   
@@ -93,28 +90,9 @@ void setupPins() {
   // Motor Pins
   pinMode(MOTOR, OUTPUT);
   analogWrite(MOTOR, NO_EXTENSION);
-  
-  // Sensor LED Pins
-  pinMode(SENSOR_0_LED, OUTPUT);
-  digitalWrite(SENSOR_0_LED, LOW);
-  
-  pinMode(SENSOR_1_LED, OUTPUT);
-  digitalWrite(SENSOR_1_LED, LOW);
-  
-  pinMode(SENSOR_2_LED, OUTPUT);
-  digitalWrite(SENSOR_2_LED, LOW);
-  
-  pinMode(SENSOR_3_LED, OUTPUT);
-  digitalWrite(SENSOR_3_LED, LOW);
-  
-  pinMode(SENSOR_4_LED, OUTPUT);
-  digitalWrite(SENSOR_4_LED, LOW);
-  
-  pinMode(SENSOR_5_LED, OUTPUT);
-  digitalWrite(SENSOR_5_LED, LOW);
 }
 
-void setupBluetooth() {
+void FactoryResetBluetooth() {
   if (FACTORYRESET_ENABLE){
     Serial.println(F("Performing a factory reset: "));
     if (!ble.factoryReset()){
@@ -246,71 +224,63 @@ void chooseMode(String mode) {
 void readSensor(int sensor) {
   uint16_t clear, red, green, blue;
   int sensorLED;
-  
-  tcaselect(sensor);
-
-  //digitalWrite(sensorLED, HIGH); // Turns sensorLED on
+ 
   digitalWrite(BOARD_LED, HIGH);
-  
+
+  tcaselect(sensor);
   switch(sensor){
     case 0:
       tcs0.enable();
       tcs0.getRawData(&red, &green, &blue, &clear);
-      sensorLED = SENSOR_0_LED;
       break;
     case 1:
       tcs1.enable();
       tcs1.getRawData(&red, &green, &blue, &clear);
-      sensorLED = SENSOR_1_LED;
       break;
     case 2:
       tcs2.enable();
       tcs2.getRawData(&red, &green, &blue, &clear);
-      sensorLED = SENSOR_2_LED;
       break;
     case 3:
       tcs3.enable();
       tcs3.getRawData(&red, &green, &blue, &clear);
-      sensorLED = SENSOR_3_LED;
       break;
     case 4:
       tcs4.enable();
       tcs4.getRawData(&red, &green, &blue, &clear);
-      sensorLED = SENSOR_4_LED;
       break;
     case 5:
       tcs5.enable();
       tcs5.getRawData(&red, &green, &blue, &clear);
-      sensorLED = SENSOR_5_LED;
       break;
   }
+
+  digitalWrite(BOARD_LED, LOW);
 
   float redf, bluef, greenf;
   redf = (float)red/(float)clear;
   greenf = (float)green/(float)clear;
   bluef = (float)blue/(float)clear;
   
-  digitalWrite(BOARD_LED, LOW);
-  //digitalWrite(sensorLED, LOW); // Turns sensorLED off
-
-
-  // Don't think these are necessary
-  //Serial.print(F("C:\t")); Serial.print(clear);
-  //Serial.print(F("\tR:\t")); Serial.print(red);
-  //Serial.print(F("\tG:\t")); Serial.print(green);
-  //Serial.print(F("\tB:\t")); Serial.print(blue);
-  //Serial.println();
-  
   // To send sensor number as well for ordering
   //ble.print("AT+BLEUARTTX=");
   //ble.println(sensor);
 
   // Send values over bluetooth to app
+  if (!test){
   send('A', clear);
   send('R', red);
   send('G', green);
   send('B', blue);
   Serial.println("------------------------------------");
+  }
+  else{
+    Serial.print(F("C:\t")); Serial.print(clear);
+    Serial.print(F("\tR:\t")); Serial.print(redf);
+    Serial.print(F("\tG:\t")); Serial.print(greenf);
+    Serial.print(F("\tB:\t")); Serial.print(bluef);
+    Serial.println();
+    }
 }
 
 void send(char color, uint16_t val) {
@@ -332,13 +302,9 @@ void returnFluid() {
 
 void tcaselect(uint8_t i) {
   if (i > 7) return;
-  //Serial.println("Pre begin transmission"); 
   Wire.beginTransmission(TCAADDR);
-  //Serial.println("post begin transmission"); 
   Wire.write(1 << i);
-  //Serial.println("Post write"); 
   Wire.endTransmission();  
-  // Serial.println("Post end transmission");
 }
 
 void setExtension(int extensionSetting) {

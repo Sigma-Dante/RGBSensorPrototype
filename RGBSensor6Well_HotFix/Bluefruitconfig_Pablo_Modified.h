@@ -11,9 +11,9 @@
 // The following macros declare the pins that will be used for 'SW' serial.
 // You should use this option if you are connecting the UART Friend to an UNO
 // ----------------------------------------------------------------------------------------------
-#define BLUEFRUIT_SWUART_RXD_PIN       9    // Required for software serial! // Not used
-#define BLUEFRUIT_SWUART_TXD_PIN       10   // Required for software serial! // Not used
-#define BLUEFRUIT_UART_CTS_PIN         12   // Required for software serial! Pablo - Changed to 12 from 11
+#define BLUEFRUIT_SWUART_RXD_PIN       5    // Required for software serial! // Not used
+#define BLUEFRUIT_SWUART_TXD_PIN       7   // Required for software serial! // Not used
+#define BLUEFRUIT_UART_CTS_PIN         6   // Required for software serial! // Not used
 #define BLUEFRUIT_UART_RTS_PIN         -1   // Optional, set to -1 if unused
 
 
@@ -31,7 +31,7 @@
 // ----------------------------------------------------------------------------------------------
 // The following sets the optional Mode pin, its recommended but not required
 // ----------------------------------------------------------------------------------------------
-#define BLUEFRUIT_UART_MODE_PIN        12    // Set to -1 if unused
+#define BLUEFRUIT_UART_MODE_PIN        -1    // Set to -1 if unused
 
 
 // SHARED SPI SETTINGS
