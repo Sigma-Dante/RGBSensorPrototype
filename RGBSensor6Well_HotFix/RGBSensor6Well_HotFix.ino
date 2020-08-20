@@ -277,7 +277,7 @@ void readSensor(int sensor) {
   //ble.println(sensor);
 
   // Send values over bluetooth to app
-  if (test){
+  if (!test){
   send('A', clear);
   send('R', red);
   send('G', green);
