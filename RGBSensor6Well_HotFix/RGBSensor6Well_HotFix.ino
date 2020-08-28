@@ -48,6 +48,9 @@ void error(const __FlashStringHelper*err) {
 
 void setup() {
   Serial.begin(9600);
+  if (!ble.begin(VERBOSE_MODE)){
+    error(F("Couldn't find Bluefruit, make sure it's in CoMmanD mode & check wiring?"));
+    }
   
   extensionSetting = 0;
   extensionLength = FULL_EXTENSION; // Used to determine how much the actuator extend
@@ -58,11 +61,7 @@ void setup() {
   // Process to setup bluetooth
   if(!test) {
     Serial.println(F("Setting up Bluetooth..."));
-    if (!ble.begin(VERBOSE_MODE)){
-      error(F("Couldn't find Bluefruit, make sure it's in CoMmanD mode & check wiring?"));
-    }
-    pinMode(8, OUTPUT);
-    digitalWrite(8, HIGH); // Set MODE on Bluefruit to HIGH == Command Mode
+    //pinMode(8, OUTPUT); digitalWrite(8, HIGH); // Set MODE on Bluefruit to HIGH == Command Mode
     FactoryResetBluetooth();
     Serial.println(F("Finished Bluetooth Setup"));
   }
