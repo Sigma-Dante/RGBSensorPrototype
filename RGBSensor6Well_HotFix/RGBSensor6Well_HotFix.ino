@@ -61,8 +61,8 @@ void setup() {
   // Process to setup bluetooth
   if(!test) {
     Serial.println(F("Setting up Bluetooth..."));
-    //pinMode(8, OUTPUT); digitalWrite(8, HIGH); // Set MODE on Bluefruit to HIGH == Command Mode
     FactoryResetBluetooth();
+    //pinMode(8, OUTPUT); digitalWrite(8, HIGH); // Set MODE on Bluefruit to HIGH == Command Mode
     Serial.println(F("Finished Bluetooth Setup"));
   }
 }
