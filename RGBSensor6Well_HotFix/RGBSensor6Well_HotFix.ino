@@ -272,11 +272,12 @@ void readSensor(int sensor) {
   bluef = (float)blue/(float)clear;
   
   // To send sensor number as well for ordering
-  //ble.print("AT+BLEUARTTX=");
-  //ble.println(sensor);
+  //
+  //
 
   // Send values over bluetooth to app
   if (!test){
+  sendSensor(sensor);
   send('A', clear);
   send('R', red);
   send('G', green);
@@ -300,6 +301,12 @@ void send(char color, uint16_t val) {
   ble.println(message);
   memset(&message[0], 0, sizeof(message));//deletes message
 }
+
+void sendSensor(int sensor) {
+  Serial.print(F("Transmitting:\t")); Serial.println(message);
+  ble.print("AT+BLEUARTTX=");
+  ble.println(sensor);
+ }
 
 void drawFluid() {
   analogWrite(MOTOR, extensionLength);  
