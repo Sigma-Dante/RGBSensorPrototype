@@ -285,6 +285,7 @@ void readSensor(int sensor) {
   Serial.println("------------------------------------");
   }
   else{
+    Serial.print(F("Sensor: "); Serial.print(sensor);
     Serial.print(F("C:\t")); Serial.print(clear);
     Serial.print(F("\tR:\t")); Serial.print(redf);
     Serial.print(F("\tG:\t")); Serial.print(greenf);
@@ -303,7 +304,7 @@ void send(char color, uint16_t val) {
 }
 
 void sendSensor(int sensor) {
-  Serial.print(F("Transmitting:\t")); Serial.println(message);
+  Serial.print(F("Transmitting:\t")); Serial.println(sensor);
   ble.print("AT+BLEUARTTX=");
   ble.println(sensor);
  }
