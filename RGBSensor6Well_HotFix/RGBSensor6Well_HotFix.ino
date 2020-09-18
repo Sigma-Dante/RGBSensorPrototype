@@ -204,13 +204,10 @@ void readSensor(int sensor) {
   redf = (float)red/(float)clear;
   greenf = (float)green/(float)clear;
   bluef = (float)blue/(float)clear;
-  
-  // To send sensor number as well for ordering
-  //ble.print("AT+BLEUARTTX=");
-  //ble.println(sensor);
 
   // Send values over bluetooth to app
   if (!test){
+  sendSensor(sensor);
   send('A', clear);
   send('R', red);
   send('G', green);
@@ -234,6 +231,11 @@ void send(char color, uint16_t val) {
   ble.println(message);
   memset(&message[0], 0, sizeof(message));//deletes message
 }
+
+void sendSensor(int sensor) {
+  ble.print("AT+BLEUARTTX=");
+  ble.println(sensor);
+ }
 
 void drawFluid() {
   analogWrite(MOTOR, extensionLength);  
