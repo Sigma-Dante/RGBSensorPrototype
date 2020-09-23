@@ -285,7 +285,7 @@ void readSensor(int sensor) {
   Serial.println("------------------------------------");
   }
   else{
-    Serial.print(F("Sensor: "); Serial.print(sensor);
+    Serial.print(F("Sensor: ")); Serial.print(sensor);
     Serial.print(F("C:\t")); Serial.print(clear);
     Serial.print(F("\tR:\t")); Serial.print(redf);
     Serial.print(F("\tG:\t")); Serial.print(greenf);
