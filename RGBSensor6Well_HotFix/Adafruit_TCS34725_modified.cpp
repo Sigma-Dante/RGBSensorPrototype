@@ -119,6 +119,7 @@ void Adafruit_TCS34725_modified::enable(void)
 {
   write8(TCS34725_ENABLE, TCS34725_ENABLE_PON);
   delay(3);
+  /*How does this work? Why does ORing PON and AEN work? Isn't this 2 enable calls*/
   write8(TCS34725_ENABLE, TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN);  
 }
 

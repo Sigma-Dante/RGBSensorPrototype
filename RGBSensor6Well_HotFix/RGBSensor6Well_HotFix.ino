@@ -231,54 +231,110 @@ void chooseMode(String mode) {
 }
 
 void readSensor(int sensor) {
-  uint16_t clear, red, green, blue;
+  uint16_t alpha, red, green, blue;
   int sensorLED;
  
   digitalWrite(BOARD_LED, HIGH);
-
   tcaselect(sensor);
   switch(sensor){
     case 0:
       tcs0.enable();
-      tcs0.getRawData(&red, &green, &blue, &clear);
+      tcs0.getRawData(&red, &green, &blue, &alpha);
       break;
     case 1:
       tcs1.enable();
-      tcs1.getRawData(&red, &green, &blue, &clear);
+      tcs1.getRawData(&red, &green, &blue, &alpha);
       break;
     case 2:
       tcs2.enable();
-      tcs2.getRawData(&red, &green, &blue, &clear);
+      tcs2.getRawData(&red, &green, &blue, &alpha);
       break;
     case 3:
       tcs3.enable();
-      tcs3.getRawData(&red, &green, &blue, &clear);
+      tcs3.getRawData(&red, &green, &blue, &alpha);
       break;
     case 4:
       tcs4.enable();
-      tcs4.getRawData(&red, &green, &blue, &clear);
+      tcs4.getRawData(&red, &green, &blue, &alpha);
       break;
     case 5:
       tcs5.enable();
-      tcs5.getRawData(&red, &green, &blue, &clear);
+      tcs5.getRawData(&red, &green, &blue, &alpha);
       break;
   }
-
   digitalWrite(BOARD_LED, LOW);
-
-  float redf, bluef, greenf;
-  redf = (float)red/(float)clear;
-  greenf = (float)green/(float)clear;
-  bluef = (float)blue/(float)clear;
+// Check if any zeros are present, 1st try
+  if(!(alpha)){
+    Serial.print(F("C:\t")); Serial.print(alpha);Serial.print(F("\n"));
+    Serial.print(F("Reading zero alpha. 1st re-attempt\n"));
+    switch(sensor){
+    case 0:
+      tcs0.enable();
+      tcs0.getRawData(&red, &green, &blue, &alpha);
+      break;
+    case 1:
+      tcs1.enable();
+      tcs1.getRawData(&red, &green, &blue, &alpha);
+      break;
+    case 2:
+      tcs2.enable();
+      tcs2.getRawData(&red, &green, &blue, &alpha);
+      break;
+    case 3:
+      tcs3.enable();
+      tcs3.getRawData(&red, &green, &blue, &alpha);
+      break;
+    case 4:
+      tcs4.enable();
+      tcs4.getRawData(&red, &green, &blue, &alpha);
+      break;
+    case 5:
+      tcs5.enable();
+      tcs5.getRawData(&red, &green, &blue, &alpha);
+      break;
+      }
+  }
+// Check if any zeros are present, 2nd try
+  if(!(alpha)){
+    Serial.print(F("C:\t")); Serial.print(alpha);Serial.print(F("\n"));
+    Serial.print(F("Reading zero alpha. 2nd re-attempt\n"));
+    switch(sensor){
+    case 0:
+      tcs0.enable();
+      tcs0.getRawData(&red, &green, &blue, &alpha);
+      break;
+    case 1:
+      tcs1.enable();
+      tcs1.getRawData(&red, &green, &blue, &alpha);
+      break;
+    case 2:
+      tcs2.enable();
+      tcs2.getRawData(&red, &green, &blue, &alpha);
+      break;
+    case 3:
+      tcs3.enable();
+      tcs3.getRawData(&red, &green, &blue, &alpha);
+      break;
+    case 4:
+      tcs4.enable();
+      tcs4.getRawData(&red, &green, &blue, &alpha);
+      break;
+    case 5:
+      tcs5.enable();
+      tcs5.getRawData(&red, &green, &blue, &alpha);
+      break;
+      }
+  }
   
-  // To send sensor number as well for ordering
-  //
-  //
+  float redf, bluef, greenf;
+  redf = (float)red/(float)alpha;
+  greenf = (float)green/(float)alpha;
+  bluef = (float)blue/(float)alpha;
 
   // Send values over bluetooth to app
   if (!test){
   sendSensor(sensor);
-  send('A', clear);
+  send('A', alpha);
   send('R', red);
   send('G', green);
   send('B', blue);
@@ -286,13 +342,14 @@ void readSensor(int sensor) {
   }
   else{
     Serial.print(F("Sensor: ")); Serial.print(sensor);
-    Serial.print(F("C:\t")); Serial.print(clear);
+    Serial.print(F("C:\t")); Serial.print(alpha);
     Serial.print(F("\tR:\t")); Serial.print(redf);
     Serial.print(F("\tG:\t")); Serial.print(greenf);
     Serial.print(F("\tB:\t")); Serial.print(bluef);
     Serial.println();
     }
 }
+
 
 void send(char color, uint16_t val) {
   message[0] = color;31;
