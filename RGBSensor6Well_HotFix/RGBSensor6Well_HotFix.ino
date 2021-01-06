@@ -33,7 +33,7 @@ char message[LENGTH];
 int extensionLength;
 int extensionSetting;
 
-bool test = true;
+bool test = false;
 bool runSensors = false;
 
 static String inputBuffer;
@@ -236,6 +236,7 @@ void readSensor(int sensor) {
  
   digitalWrite(BOARD_LED, HIGH);
   tcaselect(sensor);
+  do{
   switch(sensor){
     case 0:
       tcs0.enable();
@@ -261,7 +262,7 @@ void readSensor(int sensor) {
       tcs5.enable();
       tcs5.getRawData(&red, &green, &blue, &alpha);
       break;
-  }
+  }} while(!(alpha));
   digitalWrite(BOARD_LED, LOW);
 // Check if any zeros are present, 1st try
   if(!(alpha)){
@@ -327,31 +328,90 @@ void readSensor(int sensor) {
   }
    // Conversion of ARGB values to hex
    String astring = String(alpha,HEX);
+   int astring_append = 4 - astring.length();
+   switch(astring_append){
+    case 0:
+      break;
+    case 1:
+      astring = "0" + astring;
+      break;
+    case 2:
+      astring = "00" + astring;
+      break;
+    case 3:
+      astring = "000" + astring;
+      break;
+//    case 4:
+//      astring = "0000" + astring;
+//      break;
+    }
    String rstring = String(red,HEX);
+   int rstring_append = 4 - rstring.length();
+   switch(rstring_append){
+    case 0:
+      break;
+    case 1:
+      rstring = "0" + rstring;
+      break;
+    case 2:
+      rstring = "00" + rstring;
+      break;
+    case 3:
+      rstring = "000" + rstring;
+      break;
+//    case 4:
+//      rstring = "0000" + rstring;
+//      break;
+    }
    String gstring = String(green,HEX);
+   int gstring_append = 4 - gstring.length();
+   switch(gstring_append){
+    case 0:
+      break;
+    case 1:
+      gstring = "0" + gstring;
+      break;
+    case 2:
+      gstring = "00" + gstring;
+      break;
+    case 3:
+      gstring = "000" + gstring;
+      break;
+//    case 4:
+//      gstring = "0000" + gstring;
+//      break;
+    }
    String bstring = String(blue,HEX);
+   int bstring_append = 4 - bstring.length();
+   switch(bstring_append){
+    case 0:
+      break;
+    case 1:
+      bstring = "0" + bstring;
+      break;
+    case 2:
+      bstring = "00" + bstring;
+      break;
+    case 3:
+      bstring = "000" + bstring;
+      break;
+//    case 4:
+//      bstring = "0000" + bstring;
+//      break;
+    }
 
    // Concatenate strings into final message
-   String messg = sensorLED + astring+rstring+gstring+bstring;
+   String messg = sensor + astring+rstring+gstring+bstring;
 
   // Send values over bluetooth to app
   if (!test){
   sendHEX(messg);
-//  sendSensor(sensor);
-//  send('A', alpha);
-//  send('R', red);
-//  send('G', green);
-//  send('B', blue);
   Serial.println("------------------------------------");
   }
   else{
+    Serial.println(sensor);
     Serial.println(messg);
-//    Serial.print(F("Sensor: ")); Serial.print(sensor);
-//    Serial.print(F("C:\t")); Serial.print(alpha);
-//    Serial.print(F("\tR:\t")); Serial.print(redf);
-//    Serial.print(F("\tG:\t")); Serial.print(greenf);
-//    Serial.print(F("\tB:\t")); Serial.print(bluef);
-//    Serial.println();
+    Serial.println("------------------------------------");
     }
 }
 
@@ -360,16 +420,6 @@ void sendHEX(String message_to_send) {
   ble.print("AT+BLEUARTTX=");
   ble.println(message_to_send);
   }
-
-
-void send(char color, uint16_t val) {
-  message[0] = color;31;
-  dtostrf(val, sizeof(val), 0, &message[1]);
-  Serial.print(F("Transmitting:\t")); Serial.println(message);
-  ble.print("AT+BLEUARTTX=");
-  ble.println(message);
-  memset(&message[0], 0, sizeof(message));//deletes message
-}
 
 void sendSensor(int sensor) {
   Serial.print(F("Transmitting:\t")); Serial.println(sensor);
