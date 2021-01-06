@@ -33,7 +33,7 @@ char message[LENGTH];
 int extensionLength;
 int extensionSetting;
 
-bool test = false;
+bool test = true;
 bool runSensors = false;
 
 static String inputBuffer;
@@ -325,30 +325,41 @@ void readSensor(int sensor) {
       break;
       }
   }
-  
-  float redf, bluef, greenf;
-  redf = (float)red/(float)alpha;
-  greenf = (float)green/(float)alpha;
-  bluef = (float)blue/(float)alpha;
+   // Conversion of ARGB values to hex
+   String astring = String(alpha,HEX);
+   String rstring = String(red,HEX);
+   String gstring = String(green,HEX);
+   String bstring = String(blue,HEX);
+
+   // Concatenate strings into final message
+   String messg = sensorLED + astring+rstring+gstring+bstring;
 
   // Send values over bluetooth to app
   if (!test){
-  sendSensor(sensor);
-  send('A', alpha);
-  send('R', red);
-  send('G', green);
-  send('B', blue);
+  sendHEX(messg);
+//  sendSensor(sensor);
+//  send('A', alpha);
+//  send('R', red);
+//  send('G', green);
+//  send('B', blue);
   Serial.println("------------------------------------");
   }
   else{
-    Serial.print(F("Sensor: ")); Serial.print(sensor);
-    Serial.print(F("C:\t")); Serial.print(alpha);
-    Serial.print(F("\tR:\t")); Serial.print(redf);
-    Serial.print(F("\tG:\t")); Serial.print(greenf);
-    Serial.print(F("\tB:\t")); Serial.print(bluef);
-    Serial.println();
+    Serial.println(messg);
+//    Serial.print(F("Sensor: ")); Serial.print(sensor);
+//    Serial.print(F("C:\t")); Serial.print(alpha);
+//    Serial.print(F("\tR:\t")); Serial.print(redf);
+//    Serial.print(F("\tG:\t")); Serial.print(greenf);
+//    Serial.print(F("\tB:\t")); Serial.print(bluef);
+//    Serial.println();
     }
 }
+
+void sendHEX(String message_to_send) {
+  Serial.print(F("Transmitting:\t")); Serial.println(message_to_send);
+  ble.print("AT+BLEUARTTX=");
+  ble.println(message_to_send);
+  }
 
 
 void send(char color, uint16_t val) {
