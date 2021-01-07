@@ -236,7 +236,6 @@ void readSensor(int sensor) {
  
   digitalWrite(BOARD_LED, HIGH);
   tcaselect(sensor);
-  do{
   switch(sensor){
     case 0:
       tcs0.enable();
@@ -262,7 +261,7 @@ void readSensor(int sensor) {
       tcs5.enable();
       tcs5.getRawData(&red, &green, &blue, &alpha);
       break;
-  }} while(!(alpha));
+  }
   digitalWrite(BOARD_LED, LOW);
 // Check if any zeros are present, 1st try
   if(!(alpha)){
@@ -420,6 +419,16 @@ void sendHEX(String message_to_send) {
   ble.print("AT+BLEUARTTX=");
   ble.println(message_to_send);
   }
+
+
+void send(char color, uint16_t val) {
+  message[0] = color;31;
+  dtostrf(val, sizeof(val), 0, &message[1]);
+  Serial.print(F("Transmitting:\t")); Serial.println(message);
+  ble.print("AT+BLEUARTTX=");
+  ble.println(message);
+  memset(&message[0], 0, sizeof(message));//deletes message
+}
 
 void sendSensor(int sensor) {
   Serial.print(F("Transmitting:\t")); Serial.println(sensor);
