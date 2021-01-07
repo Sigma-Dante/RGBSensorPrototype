@@ -405,6 +405,12 @@ void readSensor(int sensor) {
   // Send values over bluetooth to app
   if (!test){
   sendHEX(messg);
+  Serial.println(F("Data Information:"));
+  Serial.print(F("Sensor: ")); Serial.print(sensor);
+  Serial.print(F("\tA: ")); Serial.print(alpha);
+  Serial.print(F("\tR: ")); Serial.print(red);
+  Serial.print(F("\tG: ")); Serial.print(green);
+  Serial.print(F("\tB: ")); Serial.println(blue);
   Serial.println("------------------------------------");
   }
   else{
