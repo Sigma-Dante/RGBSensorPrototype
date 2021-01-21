@@ -28,6 +28,8 @@ Adafruit_TCS34725_modified tcs2;
 Adafruit_TCS34725_modified tcs3;
 Adafruit_TCS34725_modified tcs4;
 Adafruit_TCS34725_modified tcs5;
+Adafruit_TCS34725_modified tcs6;
+Adafruit_TCS34725_modified tcs7;
 
 char message[LENGTH];
 int extensionLength;
@@ -112,45 +114,58 @@ void FactoryResetBluetooth() {
 void setupSensors() {
   //Sets up RGB on MUX Channel 0
   Serial.println("Setting up Sensor 0");
-  delay(500);
   tcaselect(0);
   tcs0 = Adafruit_TCS34725_modified(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
   tcs0.begin();
+  delay(500);
 
   //Sets up RGB on MUX Channel 1
   Serial.println("Setting up Sensor 1");
-  delay(500);
   tcaselect(1);
   tcs1 = Adafruit_TCS34725_modified(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
   tcs1.begin();
-
+  delay(500);
   //Sets up RGB on MUX Channel 2
   Serial.println("Setting up Sensor 2");
-  delay(500);
   tcaselect(2);
   tcs2 = Adafruit_TCS34725_modified(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
   tcs2.begin();
-
+  delay(500);
+  
   //Sets up RGB on MUX Channel 3
   Serial.println("Setting up Sensor 3");
-  delay(500);
   tcaselect(3);
   tcs3 = Adafruit_TCS34725_modified(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
   tcs3.begin();
-
+  delay(500);
+  
   //Sets up RGB on MUX Channel 4
   Serial.println("Setting up Sensor 4");
-  delay(500);
   tcaselect(4);
   tcs4 = Adafruit_TCS34725_modified(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
   tcs4.begin();
-
+  delay(500);
+  
   //Sets up RGB on MUX Channel 5
   Serial.println("Setting up Sensor 5");
-  delay(500);
   tcaselect(5);
   tcs5 = Adafruit_TCS34725_modified(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
   tcs5.begin();
+  delay(500);
+
+  //Sets up RGB on MUX Channel 6
+  Serial.println("Setting up Sensor 6");
+  tcaselect(6);
+  tcs6 = Adafruit_TCS34725_modified(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
+  tcs6.begin();
+  delay(500);
+
+  //Sets up RGB on MUX Channel 7
+  Serial.println("Setting up Sensor 7");
+  tcaselect(7);
+  tcs7 = Adafruit_TCS34725_modified(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
+  tcs7.begin();
+  delay(500);
 
   Wire.begin(); 
 }
