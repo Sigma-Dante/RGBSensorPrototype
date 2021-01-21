@@ -1,4 +1,4 @@
-#include "Settings_Pablo_Modified.h"
+#include "Extension_Settings.h"
 #include "Wire.h"
 
 // Bluefruit Includes
@@ -7,7 +7,7 @@
 #include "Adafruit_BLE.h"
 #include "Adafruit_BluefruitLE_SPI.h"
 #include "Adafruit_BluefruitLE_UART.h"
-#include "BluefruitConfig_Pablo_Modified.h"
+#include "BluefruitConfig_Modified.h"
 
 #define FACTORYRESET_ENABLE         0
 #define MINIMUM_FIRMWARE_VERSION    "0.6.6"
