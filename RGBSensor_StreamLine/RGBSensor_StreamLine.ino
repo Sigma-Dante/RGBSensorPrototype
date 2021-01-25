@@ -53,18 +53,15 @@ void setup() {
   if (!ble.begin(VERBOSE_MODE)){
     error(F("Couldn't find Bluefruit, make sure it's in CoMmanD mode & check wiring?"));
     }
-  
   extensionSetting = 0;
   extensionLength = FULL_EXTENSION; // Used to determine how much the actuator extend
- 
   //Serial.println(F("Setup Pins")); setupPins(); // Setups the non-bluetooth pins
-  Serial.println(F("Setup Sensors")); setupSensors(); // Setups the RGB Sensors // Loose pin somewhere in setupSensors()
+  Serial.println(F("Setting up sensors")); setupSensors(); // Setups the RGB Sensors // Loose pin somewhere in setupSensors()
   
   // Process to setup bluetooth
   if(!test) {
     Serial.println(F("Setting up Bluetooth..."));
     FactoryResetBluetooth();
-    //pinMode(8, OUTPUT); digitalWrite(8, HIGH); // Set MODE on Bluefruit to HIGH == Command Mode
     Serial.println(F("Finished Bluetooth Setup"));
   }
 }
@@ -81,11 +78,8 @@ void loop() {
   }
 }
 
+// Not used currently
 void setupPins() {
-  // LED Pins
-  pinMode(BOARD_LED, OUTPUT);
-  digitalWrite(BOARD_LED, LOW);
-  
   // Motor Pins
   pinMode(MOTOR, OUTPUT);
   analogWrite(MOTOR, NO_EXTENSION);
@@ -248,98 +242,38 @@ void chooseMode(String mode) {
 void readSensor(int sensor) {
   uint16_t alpha, red, green, blue;
   int sensorLED;
- 
-  digitalWrite(BOARD_LED, HIGH);
+  
   tcaselect(sensor);
-  switch(sensor){
-    case 0:
-      tcs0.enable();
-      tcs0.getRawData(&red, &green, &blue, &alpha);
-      break;
-    case 1:
-      tcs1.enable();
-      tcs1.getRawData(&red, &green, &blue, &alpha);
-      break;
-    case 2:
-      tcs2.enable();
-      tcs2.getRawData(&red, &green, &blue, &alpha);
-      break;
-    case 3:
-      tcs3.enable();
-      tcs3.getRawData(&red, &green, &blue, &alpha);
-      break;
-    case 4:
-      tcs4.enable();
-      tcs4.getRawData(&red, &green, &blue, &alpha);
-      break;
-    case 5:
-      tcs5.enable();
-      tcs5.getRawData(&red, &green, &blue, &alpha);
-      break;
-  }
-  digitalWrite(BOARD_LED, LOW);
-// Check if any zeros are present, 1st try
-  if(!(alpha)){
-    Serial.print(F("C:\t")); Serial.print(alpha);Serial.print(F("\n"));
-    Serial.print(F("Reading zero alpha. 1st re-attempt\n"));
-    switch(sensor){
-    case 0:
-      tcs0.enable();
-      tcs0.getRawData(&red, &green, &blue, &alpha);
-      break;
-    case 1:
-      tcs1.enable();
-      tcs1.getRawData(&red, &green, &blue, &alpha);
-      break;
-    case 2:
-      tcs2.enable();
-      tcs2.getRawData(&red, &green, &blue, &alpha);
-      break;
-    case 3:
-      tcs3.enable();
-      tcs3.getRawData(&red, &green, &blue, &alpha);
-      break;
-    case 4:
-      tcs4.enable();
-      tcs4.getRawData(&red, &green, &blue, &alpha);
-      break;
-    case 5:
-      tcs5.enable();
-      tcs5.getRawData(&red, &green, &blue, &alpha);
-      break;
-      }
-  }
-// Check if any zeros are present, 2nd try
-  if(!(alpha)){
-    Serial.print(F("C:\t")); Serial.print(alpha);Serial.print(F("\n"));
-    Serial.print(F("Reading zero alpha. 2nd re-attempt\n"));
-    switch(sensor){
-    case 0:
-      tcs0.enable();
-      tcs0.getRawData(&red, &green, &blue, &alpha);
-      break;
-    case 1:
-      tcs1.enable();
-      tcs1.getRawData(&red, &green, &blue, &alpha);
-      break;
-    case 2:
-      tcs2.enable();
-      tcs2.getRawData(&red, &green, &blue, &alpha);
-      break;
-    case 3:
-      tcs3.enable();
-      tcs3.getRawData(&red, &green, &blue, &alpha);
-      break;
-    case 4:
-      tcs4.enable();
-      tcs4.getRawData(&red, &green, &blue, &alpha);
-      break;
-    case 5:
-      tcs5.enable();
-      tcs5.getRawData(&red, &green, &blue, &alpha);
-      break;
-      }
-  }
+  int i = 0;
+  do{ // do while loop that repeats if alpha is zero for a maximum of 3 tries.
+	  i++;
+	  switch(sensor){
+		case 0:
+		  tcs0.enable();
+		  tcs0.getRawData(&red, &green, &blue, &alpha);
+		  break;
+		case 1:
+		  tcs1.enable();
+		  tcs1.getRawData(&red, &green, &blue, &alpha);
+		  break;
+		case 2:
+		  tcs2.enable();
+		  tcs2.getRawData(&red, &green, &blue, &alpha);
+		  break;
+		case 3:
+		  tcs3.enable();
+		  tcs3.getRawData(&red, &green, &blue, &alpha);
+		  break;
+		case 4:
+		  tcs4.enable();
+		  tcs4.getRawData(&red, &green, &blue, &alpha);
+		  break;
+		case 5:
+		  tcs5.enable();
+		  tcs5.getRawData(&red, &green, &blue, &alpha);
+		  break;
+  }} while(!(alpha)  && (i < 4));
+  
    // Conversion of ARGB values to hex
    String astring = String(alpha,HEX);
    int astring_append = 4 - astring.length();
@@ -355,9 +289,6 @@ void readSensor(int sensor) {
     case 3:
       astring = "000" + astring;
       break;
-//    case 4:
-//      astring = "0000" + astring;
-//      break;
     }
    String rstring = String(red,HEX);
    int rstring_append = 4 - rstring.length();
@@ -373,9 +304,6 @@ void readSensor(int sensor) {
     case 3:
       rstring = "000" + rstring;
       break;
-//    case 4:
-//      rstring = "0000" + rstring;
-//      break;
     }
    String gstring = String(green,HEX);
    int gstring_append = 4 - gstring.length();
@@ -391,9 +319,6 @@ void readSensor(int sensor) {
     case 3:
       gstring = "000" + gstring;
       break;
-//    case 4:
-//      gstring = "0000" + gstring;
-//      break;
     }
    String bstring = String(blue,HEX);
    int bstring_append = 4 - bstring.length();
@@ -409,13 +334,10 @@ void readSensor(int sensor) {
     case 3:
       bstring = "000" + bstring;
       break;
-//    case 4:
-//      bstring = "0000" + bstring;
-//      break;
     }
 
    // Concatenate strings into final message
-   String messg = sensor + astring+rstring+gstring+bstring;
+   String messg = sensor + astring + rstring + gstring + bstring;
 
   // Send values over bluetooth to app
   if (!test){
