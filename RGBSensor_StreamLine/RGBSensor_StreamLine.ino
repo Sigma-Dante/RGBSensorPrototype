@@ -32,6 +32,7 @@ Adafruit_TCS34725_modified tcs6;
 Adafruit_TCS34725_modified tcs7;
 
 char message[LENGTH];
+char msgbuf[17];
 int extensionLength;
 int extensionSetting;
 
@@ -341,7 +342,10 @@ void readSensor(int sensor) {
 
   // Send values over bluetooth to app
   if (!test){
-  sendHEX(messg);
+  makeMsg(msgbuf,sensor,alpha,red,green,blue);
+  ble.print("AT+BLEUARTTX=");
+  ble.println(msgbuf);
+  //sendHEX(messg);
   Serial.println(F("Data Information:"));
   Serial.print(F("Sensor: ")); Serial.print(sensor);
   Serial.print(F("\tA: ")); Serial.print(alpha);
@@ -406,4 +410,8 @@ void runSensorTests() {
   readSensor(4);
   readSensor(5);
   readSensor(6);
+}
+
+void makeMsg(char* msgbuf, int sensor, uint16_t alpha, uint16_t red, uint16_t green, uint16_t blue) {
+  sprintf(msgbuf, "%0.1X%0.4X%0.4X%0.4X%0.4X", sensor, alpha, red, green, blue);
 }
