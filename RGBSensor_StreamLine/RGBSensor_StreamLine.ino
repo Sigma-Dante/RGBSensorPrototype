@@ -31,7 +31,6 @@ Adafruit_TCS34725_modified tcs5;
 Adafruit_TCS34725_modified tcs6;
 Adafruit_TCS34725_modified tcs7;
 
-char message[LENGTH];
 char msgbuf[17];
 int extensionLength;
 int extensionSetting;
@@ -367,7 +366,7 @@ void sendHEX(String message_to_send) {
   ble.println(message_to_send);
   }
 
-
+// Deprecated
 void send(char color, uint16_t val) {
   message[0] = color;31;
   dtostrf(val, sizeof(val), 0, &message[1]);
