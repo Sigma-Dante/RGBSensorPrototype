@@ -40,23 +40,16 @@ bool runSensors = false;
 
 static String inputBuffer;
 static String fullBuffer = "";
-static long lastRXTime = millis();
-long lastTempTime = millis();
-
-void error(const __FlashStringHelper*err) {
-  Serial.println(err);
-  while (1);
-}
 
 void setup() {
   Serial.begin(9600);
   if (!ble.begin(VERBOSE_MODE)){
-    error(F("Couldn't find Bluefruit, make sure it's in CoMmanD mode & check wiring?"));
+	  Serial.println(F("Couldn't find Bluefruit, make sure it's in CoMmanD mode & check wiring?"));
+	  exit(0);
     }
   extensionSetting = 0;
   extensionLength = FULL_EXTENSION; // Used to determine how much the actuator extend
-  //Serial.println(F("Setup Pins")); setupPins(); // Setups the non-bluetooth pins
-  Serial.println(F("Setting up sensors")); setupSensors(); // Setups the RGB Sensors // Loose pin somewhere in setupSensors()
+  Serial.println(F("Setting up sensors")); setupSensors(); // Setups the RGB Sensors
   
   // Process to setup bluetooth
   if(!test) {
